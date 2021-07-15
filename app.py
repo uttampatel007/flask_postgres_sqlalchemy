@@ -38,12 +38,22 @@ def hello_name(name):
 @app.route('/result/<url>')
 def result(url):
     """
-        Creating Result object and saving it to DB
+        Creating Result object, saving it to DB,
+        retriving all objects and filtering
     """
     obj = Result(url,"{'data':'yes'}","{'data':'yes'}")
     db.session.add(obj)
-    db.session.commit()    
-    return "{}".format(url)
+    db.session.commit()
+
+    all_objs = obj.query.all()
+    html = ""
+    
+    for x in all_objs:
+        html += str(x.id)+' '+str(x.url) + '<br>'
+
+    love = obj.query.filter_by(url='love').all()
+    html += 'love:{}'.format(len(love))
+    return "{}".format(html)
 
 
 if __name__ == '__main__':
